@@ -14,12 +14,11 @@ int main(int nargs, char** args)
 	}
 	if (CHECK_ARG(1, "-h"))
 	{
-		cout << "To dump a executable file type \"turet -dump ProcessName.exe C:\dump.exe" << endl;
+		cout << "To dump a executable file type \"turet -dump ProcessName.exe C:\dump.exe\"" << endl;
 	}
 	else if (CHECK_ARG(1, "-dump"))
 	{
 		char* ProcessName = args[2];
-		cout << "PROCESS SELECTED: " << ProcessName << endl;
 		cout << "[1/5] Opening proces..." << endl;
 		DWORD PID = ProcessHelper::GetProcessIDbyName(ProcessName);
 		if (PID == -1)
@@ -83,5 +82,6 @@ int main(int nargs, char** args)
 		cout << "Process dumped to " << args[3] << " successfully!" << endl;
 		exit(0);
 	}
+	
 	return 0;
 }

@@ -16,6 +16,7 @@ public:
 	static DWORD GetProcessIDbyName(char* lpName);
 
 private:
+	static string toLower(string s);
 	HANDLE hProcess;
 };
 

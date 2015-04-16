@@ -86,7 +86,9 @@ DWORD ProcessHelper::GetProcessIDbyName(char* ProcessName)
 	Process32First(hSnap, &pe);
 	do
 	{
-		if (strcmp(pe.szExeFile, ProcessName) == 0)
+		string pName = string(ProcessName);
+		string szExeFile = string(pe.szExeFile);
+		if (pName.compare(toLower(szExeFile)) == 0)
 		{
 			CloseHandle(hSnap);
 			return pe.th32ProcessID;
@@ -94,4 +96,11 @@ DWORD ProcessHelper::GetProcessIDbyName(char* ProcessName)
 	} while (Process32Next(hSnap, &pe));
 	CloseHandle(hSnap);
 	return -1;
+}
+
+string ProcessHelper::toLower(string s)
+{
+	for (auto it = s.begin(); it != s.end(); ++it)
+		*it = tolower(*it);
+	return s;
 }
