@@ -11,6 +11,7 @@ public:
 	char* GetProcessName();
 	void* Read(DWORD Address, DWORD size);
 	template<typename t> t* Read(DWORD Address);
+	int GetExternalStrLen(DWORD Address);
 	~ProcessHelper();
 public:
 	static DWORD GetProcessIDbyName(char* lpName);

@@ -68,6 +68,24 @@ void * ProcessHelper::Read(DWORD Address, DWORD size)
 	return result;
 }
 
+int ProcessHelper::GetExternalStrLen(DWORD Address)
+{
+	int cb = 512;
+	char* lpString = new char[cb];
+	ZeroMemory(lpString, cb);
+	DWORD Read;
+ReDo:
+	ReadProcessMemory(hProcess, (void*)Address, lpString, cb, &Read);
+	if (Read > cb)
+	{
+		cb += 512;
+		goto ReDo;
+	}
+	int result = strlen(lpString);
+	delete lpString;
+	return result;
+}
+
 ProcessHelper::~ProcessHelper()
 {
 }
@@ -88,7 +106,7 @@ DWORD ProcessHelper::GetProcessIDbyName(char* ProcessName)
 	{
 		string pName = string(ProcessName);
 		string szExeFile = string(pe.szExeFile);
-		if (pName.compare(toLower(szExeFile)) == 0)
+		if (toLower(pName).compare((toLower(szExeFile))) == 0)
 		{
 			CloseHandle(hSnap);
 			return pe.th32ProcessID;

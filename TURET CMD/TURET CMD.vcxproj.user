@@ -3,11 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-dump turet.exe</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-iatrebuild idaq.exe C:\dmp.exe</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-dump turet.exe</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-iatrebuild idaq.exe C:\dmp.exe</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

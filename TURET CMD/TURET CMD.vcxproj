@@ -87,9 +87,6 @@
     <ClInclude Include="Includes.h" />
     <ClInclude Include="ProcessHelper.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Xml Include="Signatures.xml" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
