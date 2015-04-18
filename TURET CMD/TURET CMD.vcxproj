@@ -106,6 +106,9 @@
     <ClInclude Include="PtrScan.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StringHelper.h" />
+    <ClInclude Include="Third-Party\BeaEngine\BeaEngine.h" />
+    <ClInclude Include="Third-Party\BeaEngine\Includes\basic_types.h" />
+    <ClInclude Include="Third-Party\BeaEngine\Includes\export.h" />
     <ClInclude Include="Third-Party\TinyXML2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>

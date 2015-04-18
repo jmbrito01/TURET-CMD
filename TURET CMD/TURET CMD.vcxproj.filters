@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Third-Party\TinyXML2">
       <UniqueIdentifier>{a49a8267-de65-4000-aa20-0a22899ebdf7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Third-Party\BeaEngine">
+      <UniqueIdentifier>{666d4f72-4274-457e-b167-3d1f0ff8cdbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Third-Party\BeaEngine\Includes">
+      <UniqueIdentifier>{e685f528-bf83-4e77-9ed6-723f936ad78f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -121,6 +127,15 @@
     </ClInclude>
     <ClInclude Include="GUIButton.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Third-Party\BeaEngine\BeaEngine.h">
+      <Filter>Header Files\Third-Party\BeaEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Third-Party\BeaEngine\Includes\basic_types.h">
+      <Filter>Header Files\Third-Party\BeaEngine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Third-Party\BeaEngine\Includes\export.h">
+      <Filter>Header Files\Third-Party\BeaEngine\Includes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
