@@ -80,12 +80,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GUIButton.cpp" />
+    <ClCompile Include="GUIComboBox.cpp" />
+    <ClCompile Include="GUIForm.cpp" />
+    <ClCompile Include="GUIListView.cpp" />
+    <ClCompile Include="GUIObject.cpp" />
+    <ClCompile Include="GUITextBox.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ProcessHelper.cpp" />
+    <ClCompile Include="PtrScan.cpp" />
+    <ClCompile Include="StringHelper.cpp" />
+    <ClCompile Include="Third-Party\TinyXML2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GUIButton.h" />
+    <ClInclude Include="GUIComboBox.h" />
+    <ClInclude Include="GUIDefines.h" />
+    <ClInclude Include="GUIForm.h" />
+    <ClInclude Include="GUIIncludes.h" />
+    <ClInclude Include="GUIListView.h" />
+    <ClInclude Include="GUIObject.h" />
+    <ClInclude Include="GUITextBox.h" />
     <ClInclude Include="Includes.h" />
     <ClInclude Include="ProcessHelper.h" />
+    <ClInclude Include="PtrScan.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="StringHelper.h" />
+    <ClInclude Include="Third-Party\TinyXML2\tinyxml2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,7 +11,12 @@ public:
 	char* GetProcessName();
 	void* Read(DWORD Address, DWORD size);
 	template<typename t> t* Read(DWORD Address);
+	template<typename t> void Write(DWORD Address, t value);
 	int GetExternalStrLen(DWORD Address);
+	DWORD GetSectionVirtualAddress(char* sectionName);
+	DWORD GetSectionVirtualSize(char* sectionName);
+	PIMAGE_DOS_HEADER GetDOSHeader();
+	PIMAGE_NT_HEADERS GetNTHeaders();
 	~ProcessHelper();
 public:
 	static DWORD GetProcessIDbyName(char* lpName);
@@ -28,4 +33,10 @@ inline t * ProcessHelper::Read(DWORD Address)
 	ZeroMemory(result, sizeof(result));
 	ReadProcessMemory(hProcess, (void*)Address, (void*)result, sizeof(t), NULL);
 	return result;
+}
+
+template <typename t>
+inline void ProcessHelper::Write(DWORD Address, t value)
+{
+	WriteProcessMemory(hProcess, (void*)Address, (void*)&value, sizeof(value), NULL);
 }

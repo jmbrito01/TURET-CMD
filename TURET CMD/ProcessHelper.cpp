@@ -86,6 +86,47 @@ ReDo:
 	return result;
 }
 
+DWORD ProcessHelper::GetSectionVirtualAddress(char * sectionName)
+{
+	PIMAGE_DOS_HEADER DOSHeader = Read<IMAGE_DOS_HEADER>(GetImageBase());
+	PIMAGE_NT_HEADERS NTHeaders = Read<IMAGE_NT_HEADERS>(GetImageBase() + DOSHeader->e_lfanew);
+	for (int i = 0; i < NTHeaders->FileHeader.NumberOfSections; i++)
+	{
+		PIMAGE_SECTION_HEADER SecHeader = Read<IMAGE_SECTION_HEADER>(GetImageBase() + DOSHeader->e_lfanew + sizeof(IMAGE_NT_HEADERS) + i*sizeof(IMAGE_SECTION_HEADER));
+		if (strcmp((char*)SecHeader->Name, sectionName) == 0)
+		{
+			return SecHeader->VirtualAddress;
+		}
+	}
+	return -1;
+	return 0;
+}
+
+DWORD ProcessHelper::GetSectionVirtualSize(char * sectionName)
+{
+	PIMAGE_DOS_HEADER DOSHeader = Read<IMAGE_DOS_HEADER>(GetImageBase());
+	PIMAGE_NT_HEADERS NTHeaders = Read<IMAGE_NT_HEADERS>(GetImageBase() + DOSHeader->e_lfanew);
+	for (int i = 0; i < NTHeaders->FileHeader.NumberOfSections; i++)
+	{
+		PIMAGE_SECTION_HEADER SecHeader = Read<IMAGE_SECTION_HEADER>(GetImageBase() + DOSHeader->e_lfanew + sizeof(IMAGE_NT_HEADERS) + i*sizeof(IMAGE_SECTION_HEADER));
+		if (strcmp((char*)SecHeader->Name, sectionName) == 0)
+		{
+			return SecHeader->Misc.VirtualSize;
+		}
+	}
+	return -1;
+}
+
+PIMAGE_DOS_HEADER ProcessHelper::GetDOSHeader()
+{
+	return Read<IMAGE_DOS_HEADER>(GetImageBase());
+}
+
+PIMAGE_NT_HEADERS ProcessHelper::GetNTHeaders()
+{
+	return Read<IMAGE_NT_HEADERS>(GetImageBase() + GetDOSHeader()->e_lfanew);
+}
+
 ProcessHelper::~ProcessHelper()
 {
 }

@@ -1,5 +1,9 @@
 #include "Includes.h"
 #include "ProcessHelper.h"
+#include "GUIIncludes.h"
+#include "resource.h"
+#include "PtrScan.h"
+#include "StringHelper.h"
 
 int main(int nargs, char** args)
 {
@@ -13,36 +17,51 @@ int main(int nargs, char** args)
 	if (CHECK_ARG(1, "-h"))
 	{
 		cout << "To dump a executable file type \"turet -dump ProcessName.exe C:\dump.exe\"" << endl;
-		cout << "To read a process memory type \"turet -read ProcessName.exe 0x401000 [size]" << endl;
+		cout << "To pointer scan type \"turet -ptrscan ProcessName.exe" << endl;
+		cout << "To read in process memory type \"turet -read ProcessName.exe 0x401000 [size=4]" << endl;
+		cout << "To write in a process memory type \"turet -write ProcessName.exe 0x401000 [size=4] [value=90 90 90 90]" << endl;
 		cout << "To fix the IAT use: \"turet -iatrebuild ProcessName.exe C:\dump.exe\"" << endl;
+	}
+	else if (CHECK_ARG(1, "-ptrscan"))
+	{
+		GUIForm* pPtrFrm = new GUIForm(IDD_PTRSCAN, (DLGPROC)PtrScanProc, (int)args[2]);
+		exit(0);
+	}
+	else if (CHECK_ARG(1, "-write"))
+	{
+		char* ProcessName = args[2];
+		string AddressString = string(args[3]);
+		int Size = atoi(args[4]);
+		char** ValuesString = &args[5];
+		DWORD dwAddress = StringHelper::StringToHex(AddressString);
+		cout << "[1/2] Retrieving informations from the process..." << endl;
+		HANDLE hProcess = OpenProcess(PROCESS_VM_READ, false, ProcessHelper::GetProcessIDbyName(ProcessName));
+		if (hProcess == INVALID_HANDLE_VALUE)
+		{
+			CloseHandle(hProcess);
+			cout << "ERROR TRYING TO OPEN THE PROCESS!" << endl;
+			cout << "Error(4) code: " << hex << GetLastError() << "( " << GetLastError() << " )" << endl;
+			exit(0);
+		}
+		ProcessHelper* pHelper = new ProcessHelper(hProcess);
+		cout << "[2/2] Writting the memory..." << endl;
+		for (int i = 0; i < Size; i++)
+		{
+			//CONVERT THE VALUE STRING
+			BYTE myValue = StringHelper::StringToByte(string(ValuesString[i]));
+			pHelper->Write<BYTE>(dwAddress, myValue);
+			CloseHandle(hProcess);
+		}
+
+
+
 	}
 	else if (CHECK_ARG(1, "-read"))
 	{
 		char* ProcessName = args[2];
 		string AddressString = string(args[3]);
 		int Size = atoi(args[4]);
-		DWORD dwAddress = 0;
-		//CONVERT ADDRESS STRING IN DWORD
-		AddressString.erase(0, 2);
-		for (int i = 0; i < AddressString.size(); i++)
-		{
-			if (AddressString[i] >= '0' && AddressString[i] <= '9')
-			{
-				dwAddress += AddressString[i] - 48;
-				dwAddress *= 0x10;
-			}
-			else if (AddressString[i] >= 'A' && AddressString[i] <= 'F')
-			{
-				dwAddress += AddressString[i] - 55;
-				dwAddress *= 0x10;
-			}
-			else if (AddressString[i] >= 'a' && AddressString[i] <= 'f') 
-			{
-				dwAddress += AddressString[i] - 87;
-				dwAddress *= 0x10;
-			}
-		}
-		dwAddress /= 0x10;
+		DWORD dwAddress = StringHelper::StringToHex(AddressString);
 		cout << "[1/2] Retrieving informations from the process..." << endl;
 		HANDLE hProcess = OpenProcess(PROCESS_VM_READ, false, ProcessHelper::GetProcessIDbyName(ProcessName));
 		if (hProcess == INVALID_HANDLE_VALUE)
@@ -60,7 +79,9 @@ int main(int nargs, char** args)
 			cout << hex << (DWORD)pRead[i] << " ";
 		}
 		cout << endl;
+		CloseHandle(hProcess);
 	}
+	//TODO: FINISH LISTING THE IAT TO WRITE IT AFTER.
 	else if (CHECK_ARG(1, "-iatrebuild"))
 	{
 		char* ProcessName = args[2];
@@ -76,8 +97,8 @@ int main(int nargs, char** args)
 			exit(0);
 		}
 		ProcessHelper* pHelper = new ProcessHelper(hProcess);
-		PIMAGE_DOS_HEADER DOSHeader = pHelper->Read<IMAGE_DOS_HEADER>(pHelper->GetImageBase());
-		PIMAGE_NT_HEADERS NTHeaders = pHelper->Read<IMAGE_NT_HEADERS>(pHelper->GetImageBase() + DOSHeader->e_lfanew);
+		PIMAGE_DOS_HEADER DOSHeader = pHelper->GetDOSHeader();
+		PIMAGE_NT_HEADERS NTHeaders = pHelper->GetNTHeaders();
 		DWORD IATSize = NTHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].Size;
 		PIMAGE_IMPORT_DESCRIPTOR Import = (PIMAGE_IMPORT_DESCRIPTOR)pHelper->Read(pHelper->GetImageBase() + NTHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress, IATSize);
 		for (int i = 0; i < IATSize / sizeof(IMAGE_IMPORT_DESCRIPTOR); i++)
@@ -114,14 +135,14 @@ int main(int nargs, char** args)
 		}
 		cout << "[2/5] Retrieving informations..." << endl;
 		ProcessHelper* pHelper = new ProcessHelper(hProcess);
-		PIMAGE_DOS_HEADER DOSHeader = pHelper->Read<IMAGE_DOS_HEADER>(pHelper->GetImageBase());
+		PIMAGE_DOS_HEADER DOSHeader = pHelper->GetDOSHeader();
 		if (DOSHeader->e_magic != IMAGE_DOS_SIGNATURE)
 		{
 			CloseHandle(hProcess);
 			cout << "I COULD NOT FIND THE DOSHEADER!" << endl;
 			exit(0);
 		}
-		PIMAGE_NT_HEADERS NTHeaders = pHelper->Read<IMAGE_NT_HEADERS>(pHelper->GetImageBase() + DOSHeader->e_lfanew);
+		PIMAGE_NT_HEADERS NTHeaders = pHelper->GetNTHeaders();
 		if (NTHeaders->Signature != IMAGE_NT_SIGNATURE)
 		{
 			CloseHandle(hProcess);
