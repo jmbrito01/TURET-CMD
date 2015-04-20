@@ -49,6 +49,9 @@
     <Filter Include="Header Files\Third-Party\BeaEngine\Includes">
       <UniqueIdentifier>{e685f528-bf83-4e77-9ed6-723f936ad78f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Third-Party\XEDParse">
+      <UniqueIdentifier>{2814419d-4213-428a-a921-b144b0d5f771}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="GUIButton.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="AsmHelper.cpp">
+      <Filter>Source Files\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,9 +125,6 @@
     <ClInclude Include="GUIListView.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="GUITextBox.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StringHelper.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
@@ -136,6 +139,15 @@
     </ClInclude>
     <ClInclude Include="Third-Party\BeaEngine\Includes\export.h">
       <Filter>Header Files\Third-Party\BeaEngine\Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Third-Party\XEDParse\XEDParse.h">
+      <Filter>Header Files\Third-Party\XEDParse</Filter>
+    </ClInclude>
+    <ClInclude Include="GUITextBox.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="AsmHelper.h">
+      <Filter>Header Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

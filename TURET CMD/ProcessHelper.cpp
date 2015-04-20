@@ -127,6 +127,24 @@ PIMAGE_NT_HEADERS ProcessHelper::GetNTHeaders()
 	return Read<IMAGE_NT_HEADERS>(GetImageBase() + GetDOSHeader()->e_lfanew);
 }
 
+PIMAGE_SECTION_HEADER ProcessHelper::GetSectionHeader(int iSection)
+{
+	if (iSection < 0 || iSection > GetNTHeaders()->FileHeader.NumberOfSections)
+		return NULL;
+	return Read<IMAGE_SECTION_HEADER>(GetImageBase() + GetDOSHeader()->e_lfanew + sizeof(IMAGE_NT_HEADERS) + iSection*sizeof(IMAGE_SECTION_HEADER));
+
+}
+
+PIMAGE_SECTION_HEADER ProcessHelper::GetCodeSection()
+{
+	return GetSectionHeader(0);
+}
+
+HANDLE ProcessHelper::GetHandle()
+{
+	return hProcess;
+}
+
 ProcessHelper::~ProcessHelper()
 {
 }

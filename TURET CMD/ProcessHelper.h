@@ -17,6 +17,9 @@ public:
 	DWORD GetSectionVirtualSize(char* sectionName);
 	PIMAGE_DOS_HEADER GetDOSHeader();
 	PIMAGE_NT_HEADERS GetNTHeaders();
+	PIMAGE_SECTION_HEADER GetSectionHeader(int iSection);
+	PIMAGE_SECTION_HEADER GetCodeSection();
+	HANDLE GetHandle();
 	~ProcessHelper();
 public:
 	static DWORD GetProcessIDbyName(char* lpName);

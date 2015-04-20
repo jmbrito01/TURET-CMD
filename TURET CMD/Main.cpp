@@ -4,6 +4,7 @@
 #include "resource.h"
 #include "PtrScan.h"
 #include "StringHelper.h"
+#include "AsmHelper.h"
 
 int main(int nargs, char** args)
 {
@@ -21,7 +22,95 @@ int main(int nargs, char** args)
 		cout << "To read in process memory type \"turet -read ProcessName.exe 0x401000 [size=4]" << endl;
 		cout << "To write in a process memory type \"turet -write ProcessName.exe 0x401000 [size=4] [value=90 90 90 90]" << endl;
 		cout << "To fix the IAT use: \"turet -iatrebuild ProcessName.exe C:\dump.exe\"" << endl;
+		cout << "To dissassemble the process memory use one of this codes:" << endl;
+		cout << "---> Disassemble lines: turet -disasm -line ProcessName.exe 0x401000 [lines=20]" << endl;
+		cout << "---> Disassemble code: turet -disasm -code ProcessName.exe C:\\result.txt" << endl;
+		cout << "---> Disassemble memory: turet -disasm -memory ProcessName.exe 0x401000 [size=0x50]" << endl;
 	}
+	else if (CHECK_ARG(1, "-disasm"))
+	{
+		HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, ProcessHelper::GetProcessIDbyName(args[3]));
+		if (hProcess == INVALID_HANDLE_VALUE)
+		{
+			cout << "ERROR OPENING PROCESS!" << endl;
+			CloseHandle(hProcess);
+			exit(0);
+		}
+		ProcessHelper* pHelper = new ProcessHelper(hProcess);
+
+		
+		if (CHECK_ARG(2, "-line"))
+		{
+			AsmHelper* pAsm = new AsmHelper(pHelper->GetHandle());
+			DWORD dwAddress = StringHelper::StringToHex(string(args[4]));
+			int lines = atoi(args[5]);
+			vector<DISASM> Result = pAsm->DisassembleLines(dwAddress, lines);
+			for (auto it = Result.begin(); it != Result.end(); ++it)
+			{
+				cout << "0x" << hex << it->EIP << " - " << it->CompleteInstr << endl;
+			}
+		}
+		else if (CHECK_ARG(2, "-code"))
+		{
+			ofstream logg;
+			logg.open(args[4], ios::out);
+			
+			PIMAGE_SECTION_HEADER CodeSection = pHelper->GetCodeSection();
+			DWORD dwAddress = pHelper->GetImageBase() + CodeSection->VirtualAddress;
+			void* CodeBytes = pHelper->Read(dwAddress, dwAddress + CodeSection->Misc.VirtualSize);
+			DISASM MyDisasm = { 0 };
+			DWORD len = 0;
+			bool Error = false;
+			MyDisasm.EIP = (UIntPtr)CodeBytes;
+			while ((!Error) && (MyDisasm.EIP < (DWORD)CodeBytes+CodeSection->Misc.VirtualSize))
+			{
+				system("CLS");
+				cout << "Parsing address: 0x" << hex << dwAddress << " of 0x" << hex << pHelper->GetImageBase() + CodeSection->VirtualAddress + CodeSection->Misc.VirtualSize << endl;
+				len = Disasm(&MyDisasm);
+				if (len != UNKNOWN_OPCODE)
+				{
+					logg << "0x" << hex << dwAddress << " - " << MyDisasm.CompleteInstr << endl;
+					dwAddress += len;
+					MyDisasm.EIP += len;
+
+				}
+				else
+				{
+					logg << "ERROR PARSING FUNCTION @0x" << hex << dwAddress << endl;
+					cout << "ERROR PARSING FUNCTION @0x" << hex << dwAddress << endl;
+					Error = 1;
+				}
+			}
+			cout << "Parsing finished!" << endl;
+		}
+		else if (CHECK_ARG(2, "-memory"))
+		{
+			DWORD dwAddress = StringHelper::StringToHex(string(args[4]));
+			DWORD lines = StringHelper::StringToHex(args[5]);
+			DISASM MyDisasm = { 0 };
+			int len, i = 0;
+			int Error = 0;
+			MyDisasm.EIP = (UIntPtr)pHelper->Read(dwAddress, 50);
+			while ((!Error) && (i < lines))
+			{
+				len = Disasm(&MyDisasm);
+				VirtualFree((void*)MyDisasm.EIP, 50, MEM_DECOMMIT);
+				if (len != UNKNOWN_OPCODE)
+				{
+					cout << "0x" << hex << dwAddress << " - " << MyDisasm.CompleteInstr << endl;
+					i += len;
+					dwAddress += len;
+					MyDisasm.EIP = (UIntPtr)pHelper->Read(dwAddress, 50);
+				}
+				else
+					Error = 1;
+			}
+		}
+		CloseHandle(hProcess);
+		delete pHelper;
+		exit(0);
+	}
+	//TODO: FINISH PTR SCAN
 	else if (CHECK_ARG(1, "-ptrscan"))
 	{
 		GUIForm* pPtrFrm = new GUIForm(IDD_PTRSCAN, (DLGPROC)PtrScanProc, (int)args[2]);

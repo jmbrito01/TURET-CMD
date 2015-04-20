@@ -59,6 +59,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>crt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -77,9 +78,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <IgnoreSpecificDefaultLibraries>crt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AsmHelper.cpp" />
     <ClCompile Include="GUIButton.cpp" />
     <ClCompile Include="GUIComboBox.cpp" />
     <ClCompile Include="GUIForm.cpp" />
@@ -93,6 +96,7 @@
     <ClCompile Include="Third-Party\TinyXML2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AsmHelper.h" />
     <ClInclude Include="GUIButton.h" />
     <ClInclude Include="GUIComboBox.h" />
     <ClInclude Include="GUIDefines.h" />
@@ -110,6 +114,7 @@
     <ClInclude Include="Third-Party\BeaEngine\Includes\basic_types.h" />
     <ClInclude Include="Third-Party\BeaEngine\Includes\export.h" />
     <ClInclude Include="Third-Party\TinyXML2\tinyxml2.h" />
+    <ClInclude Include="Third-Party\XEDParse\XEDParse.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc" />
